@@ -15,7 +15,6 @@ public class Game {
             "Level up!", "And now faster!"
     };
 
-
     public static boolean over = false;
     public static final int moveSpeed = 6, rotateSpeed = 12, createSpeed = 18;
     public static int leftTick = 0, rightTick = 0, rotateTick = 0, releaseTick = 0;
@@ -23,8 +22,10 @@ public class Game {
     public static int scoringPoints = 0;
     public static boolean scoring = false;
     public static final int boardSizeX = 10;
-    public static final int boardSizeY = 19;
+    public static final int boardSizeY = 40;
+    public static int currentBoardSizeY = 18;
     public static Block blocks[][] = new Block[boardSizeX][boardSizeY];
+    public static float blocksFade[][] = new float[boardSizeX][boardSizeY];
 
     public static Integer shapeLock = new Integer(0);
     public static Shape shape = null, nextShape = new Shape(2, 2, 0.3f);
@@ -91,6 +92,18 @@ public class Game {
     }
 
     public static void update(int tick) {
+        int minBlockY = boardSizeY;
+        for(int x = 0; x < boardSizeX; x++) {
+            for(int y = 0; y < boardSizeY; y++) {
+                if(blocks[x][y] != null) {
+                    if(y < minBlockY) minBlockY = y;
+                    blocksFade[x][y] = 1;
+                } else blocksFade[x][y] = Math.max(0.15f, blocksFade[x][y] - 0.075f);
+            }
+        }
+
+        if((boardSizeY - minBlockY) >= currentBoardSizeY - 5) currentBoardSizeY = Math.min(boardSizeY, currentBoardSizeY + 5);
+        else if((boardSizeY - minBlockY) < currentBoardSizeY - 10) currentBoardSizeY = Math.max(10, currentBoardSizeY  - 5);
 
         if(scoring) {
             scoring = false;
@@ -111,7 +124,7 @@ public class Game {
 
         synchronized (shapeLock) {
             if (shape == null && releaseTick ++ > createSpeed) {
-                shape = new Shape(boardSizeX / 2 - 1, -2, 1);
+                shape = new Shape(boardSizeX / 2 - 1, (boardSizeY - currentBoardSizeY) -2, 1);
                 nextShape.type = Shape.nextType;
                 nextShape.rebuildShape();
             } else if(shape != null) {

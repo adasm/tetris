@@ -68,9 +68,10 @@ public class Shape {
             int tx = blocks[i].getX();
             int ty = blocks[i].getY();
 
+            if(tx < 0 || tx > Game.boardSizeX - 1)
+                return true;
             if(ty < 0) continue;
-
-            if(tx < 0 || tx > Game.boardSizeX - 1 || ty > Game.boardSizeY - 1 || Game.blocks[tx][ty] != null) {
+            if(ty > Game.boardSizeY - 1 || Game.blocks[tx][ty] != null) {
                 return true;
             }
         }

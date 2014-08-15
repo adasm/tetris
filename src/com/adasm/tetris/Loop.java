@@ -4,19 +4,19 @@ import javax.swing.*;
 import java.util.Random;
 
 public class Loop implements Runnable {
+    public static boolean running = true;
     public static int gravityTick = 25;
     public static final int speed = 50;
     public static int tick = 0;
 
     public static void setGravityTick(int level) {
-        gravityTick = 25 - Math.min(24, level / 3);
+        gravityTick = 25 - Math.min(24, level / 2);
     }
     @Override
     public void run() {
-
-        while(true) {
+        while(running) {
             Window.addText(new Text(Game.textNewGame[Util.randomInteger()%Game.textNewGame.length], 0.1f));
-            while (!Game.over) {
+            while (running && !Game.over) {
                 Util.sleep(1000 / speed);
                 Game.update(++tick);
                 if (Game.scoring == true) {
